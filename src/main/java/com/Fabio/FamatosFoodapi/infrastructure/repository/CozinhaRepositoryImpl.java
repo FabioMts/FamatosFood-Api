@@ -2,12 +2,14 @@ package com.Fabio.FamatosFoodapi.infrastructure.repository;
 
 import com.Fabio.FamatosFoodapi.domain.model.Cozinha;
 import com.Fabio.FamatosFoodapi.domain.repository.CozinhaRepository;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
 
+@Component
 public class CozinhaRepositoryImpl implements CozinhaRepository {
 
 
@@ -28,7 +30,6 @@ public class CozinhaRepositoryImpl implements CozinhaRepository {
     public Cozinha adicionar(Cozinha cozinha) {
         return manager.merge(cozinha);
     }
-
 
     @Transactional
     @Override
