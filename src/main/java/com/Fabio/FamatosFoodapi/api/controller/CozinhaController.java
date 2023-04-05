@@ -1,5 +1,7 @@
 package com.Fabio.FamatosFoodapi.api.controller;
 
+import com.Fabio.FamatosFoodapi.domain.exception.EntidadeEmUsoException;
+import com.Fabio.FamatosFoodapi.domain.exception.EntidadeNaoEncontradaException;
 import com.Fabio.FamatosFoodapi.domain.model.Cozinha;
 import com.Fabio.FamatosFoodapi.domain.repository.CozinhaRepository;
 import com.Fabio.FamatosFoodapi.domain.service.CadastroCozinhaService;
@@ -29,9 +31,9 @@ public class CozinhaController {
 
     @GetMapping("/{cozinhaId}")
     public ResponseEntity<Cozinha> buscar(@PathVariable Long cozinhaId) {
-        Cozinha cozinha =  cozinhaRepository.porId(cozinhaId);
+        Cozinha cozinha = cozinhaRepository.porId(cozinhaId);
 
-        if(cozinha != null) {
+        if (cozinha != null) {
             return ResponseEntity.ok(cozinha);
         }
         return ResponseEntity.notFound().build();
@@ -49,7 +51,7 @@ public class CozinhaController {
         Cozinha cozinhaAtual = cozinhaRepository.porId(cozinhaId);
 
 
-        if(cozinhaAtual != null) {
+        if (cozinhaAtual != null) {
             BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
 
             cozinhaAtual = cozinhaRepository.adicionar(cozinhaAtual);
@@ -60,18 +62,15 @@ public class CozinhaController {
 
     @DeleteMapping("/{cozinhaId}")
     public ResponseEntity<Cozinha> remover(@PathVariable Long cozinhaId) {
-        Cozinha cozinha = cozinhaRepository.porId(cozinhaId);
-
         try {
-            if (cozinha != null) {
-                cozinhaRepository.remover(cozinha);
+            cozinhaService.excluir(cozinhaId);
+            return ResponseEntity.noContent().build();
+        }catch (EntidadeNaoEncontradaException e) {
+            return ResponseEntity.noContent().build();
 
-                return ResponseEntity.noContent().build();
-            }
-            return ResponseEntity.notFound().build();
-        } catch (DataIntegrityViolationException e) {
-          return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        } catch (EntidadeEmUsoException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
-
 }
+
