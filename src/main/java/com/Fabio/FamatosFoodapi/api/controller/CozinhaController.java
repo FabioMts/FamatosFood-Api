@@ -2,6 +2,7 @@ package com.Fabio.FamatosFoodapi.api.controller;
 
 import com.Fabio.FamatosFoodapi.domain.model.Cozinha;
 import com.Fabio.FamatosFoodapi.domain.repository.CozinhaRepository;
+import com.Fabio.FamatosFoodapi.domain.service.CadastroCozinhaService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -17,6 +18,9 @@ public class CozinhaController {
 
     @Autowired
     private CozinhaRepository cozinhaRepository;
+
+    @Autowired
+    private CadastroCozinhaService cozinhaService;
 
     @GetMapping
     public List<Cozinha> listar() {
@@ -36,7 +40,7 @@ public class CozinhaController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Cozinha adicionar(@RequestBody Cozinha cozinha) {
-        return cozinhaRepository.adicionar(cozinha);
+        return cozinhaService.salvar(cozinha);
     }
 
     @PutMapping("/{cozinhaId}")
