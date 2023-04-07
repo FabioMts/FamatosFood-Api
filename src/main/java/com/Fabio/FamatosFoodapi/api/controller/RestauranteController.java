@@ -2,10 +2,12 @@ package com.Fabio.FamatosFoodapi.api.controller;
 
 
 import com.Fabio.FamatosFoodapi.domain.exception.EntidadeNaoEncontradaException;
+import com.Fabio.FamatosFoodapi.domain.model.Cozinha;
 import com.Fabio.FamatosFoodapi.domain.model.Restaurante;
 import com.Fabio.FamatosFoodapi.domain.repository.RestauranteRepository;
 import com.Fabio.FamatosFoodapi.domain.service.CadastroCozinhaService;
 import com.Fabio.FamatosFoodapi.domain.service.CadastroRestauranteService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +49,26 @@ public class RestauranteController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
+    }
+
+
+    @PutMapping("/{restauranteId}")
+    public ResponseEntity<?> atualizar(@PathVariable Long restauranteId,
+                                             @RequestBody Restaurante restaurante) {
+
+        Restaurante restauranteAtual = restauranteRepository.porId(restauranteId);
+
+        try {
+            if (restauranteAtual != null) {
+                BeanUtils.copyProperties(restaurante, restauranteAtual, "id");
+
+                restauranteAtual = restauranteService.salvar(restauranteAtual);
+                return ResponseEntity.ok(restauranteAtual);
+            }
+            return ResponseEntity.notFound().build();
+        }catch (EntidadeNaoEncontradaException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 }
