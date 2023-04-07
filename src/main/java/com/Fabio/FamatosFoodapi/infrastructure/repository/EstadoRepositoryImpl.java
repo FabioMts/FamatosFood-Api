@@ -4,6 +4,7 @@ import com.Fabio.FamatosFoodapi.domain.model.Cidade;
 import com.Fabio.FamatosFoodapi.domain.model.Estado;
 import com.Fabio.FamatosFoodapi.domain.repository.CidadeRepository;
 import com.Fabio.FamatosFoodapi.domain.repository.EstadoRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
@@ -35,8 +36,12 @@ public class EstadoRepositoryImpl implements EstadoRepository {
 
     @Transactional
     @Override
-    public void remover(Estado estado) {
-        estado = porId(estado.getId());
+    public void remover(Long id) {
+        Estado estado = porId(id);
+
+        if(estado == null) {
+            throw new EmptyResultDataAccessException(1);
+        }
         manager.remove(estado);
     }
 
