@@ -17,4 +17,4 @@ insert into estado (id, nome) values (2, 'Rio de Janeiro');
 
 insert into cidade (nome, estado_id) values ('Hortolandia', 1)
 insert into cidade (nome, estado_id) values ('Campinas', 1)
-insert into cidade (nome, estado_id) values ('Gondor', 2)
+insert into cidade (nome, estado_id) values ('Paraty', 2)
