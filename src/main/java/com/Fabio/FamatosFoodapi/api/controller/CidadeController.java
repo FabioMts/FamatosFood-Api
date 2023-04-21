@@ -2,7 +2,6 @@ package com.Fabio.FamatosFoodapi.api.controller;
 
 import com.Fabio.FamatosFoodapi.domain.exception.EntidadeNaoEncontradaException;
 import com.Fabio.FamatosFoodapi.domain.model.Cidade;
-import com.Fabio.FamatosFoodapi.domain.model.Restaurante;
 import com.Fabio.FamatosFoodapi.domain.repository.CidadeRepository;
 import com.Fabio.FamatosFoodapi.domain.service.CadastroCidadeService;
 import org.springframework.beans.BeanUtils;
@@ -12,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/cidades")
@@ -26,15 +26,15 @@ public class CidadeController {
 
     @GetMapping
     public List<Cidade> listar() {
-       return cidadeRepository.todas();
+       return cidadeRepository.findAll();
     }
 
     @GetMapping("/{cidadeId}")
     public ResponseEntity<Cidade> listaPorID(@PathVariable Long cidadeId) {
-        Cidade cidade = cidadeRepository.porId(cidadeId);
+        Optional<Cidade> cidade = cidadeRepository.findById(cidadeId);
 
-        if(cidade != null) {
-            return ResponseEntity.ok().body(cidade);
+        if(cidade.isPresent()) {
+            return ResponseEntity.ok().body(cidade.get());
         }
         return  ResponseEntity.notFound().build();
     }
@@ -53,13 +53,13 @@ public class CidadeController {
     public ResponseEntity<?> atualizar(@PathVariable Long cidadeId,
                                        @RequestBody Cidade cidade) {
 
-        Cidade cidadeAtual = cidadeRepository.porId(cidadeId);
+        Optional<Cidade> cidadeAtual = cidadeRepository.findById(cidadeId);
 
         try {
-            if (cidadeAtual != null) {
-                BeanUtils.copyProperties(cidade, cidadeAtual, "id");
+            if (cidadeAtual.isPresent()) {
+                BeanUtils.copyProperties(cidade, cidadeAtual.get(), "id");
 
-                cidadeAtual = cidadeService.salvar(cidadeAtual);
+                Cidade cidadeSalva = cidadeService.salvar(cidadeAtual.get());
                 return ResponseEntity.ok(cidadeAtual);
             }
             return ResponseEntity.notFound().build();
