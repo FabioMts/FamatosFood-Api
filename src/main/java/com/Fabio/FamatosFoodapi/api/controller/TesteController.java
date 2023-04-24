@@ -1,7 +1,6 @@
 package com.Fabio.FamatosFoodapi.api.controller;
 
 
-import com.Fabio.FamatosFoodapi.domain.model.Cozinha;
 import com.Fabio.FamatosFoodapi.domain.model.Restaurante;
 import com.Fabio.FamatosFoodapi.domain.repository.CozinhaRepository;
 import com.Fabio.FamatosFoodapi.domain.repository.RestauranteRepository;
@@ -12,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+import static com.Fabio.FamatosFoodapi.infrastructure.repository.spec.RestauranteSpecs.comFreteGratis;
+import static com.Fabio.FamatosFoodapi.infrastructure.repository.spec.RestauranteSpecs.comNomeSemelhante;
 
 @RestController
 @RequestMapping("/teste")
@@ -46,6 +48,12 @@ public class TesteController {
     @GetMapping("/restaurantes/count-por-cozinha")
     public int restaurantesCountPorCozinha(Long cozinhaId) {
         return repository.countByCozinhaId(cozinhaId);
+    }
+
+    @GetMapping("/restaurantes/com-frete-gratis")
+    public List<Restaurante> restaurantesComFreteGratis(String nome) {
+
+        return repository.findAll(comFreteGratis().and(comNomeSemelhante(nome)));
     }
 
 }
